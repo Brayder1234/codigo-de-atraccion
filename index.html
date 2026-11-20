@@ -693,7 +693,7 @@ footer .wordmark{display:inline-block;margin-bottom:14px;font-size:15px;color:#d
    ========================================================= */
 var CFG = {
   // Enlace de pago de Hotmart (Producto > Enlaces > Página de pago). Ej: 'https://pay.hotmart.com/A12345678B?checkoutMode=10'
-  checkout: '',
+  checkout: 'https://pay.hotmart.com/X108585311C',
   precio: 9.90,            // precio en USD (debe coincidir con Hotmart)
   precioAntes: 19.90,      // precio tachado: el precio al que REALMENTE lo venderás después. null = no se muestra
   // Fecha y hora REAL en que subes el precio (hora Colombia), ej. '2026-12-15T23:59:59-05:00'.
@@ -706,7 +706,10 @@ var CFG = {
   redes: {                 // enlaces a tus perfiles. Vacío = no se muestra el botón
     tiktok: '', instagram: '', facebook: '', youtube: ''
   },
-  pixelMeta: ''            // ID del píxel de Meta (Facebook/Instagram Ads). Vacío = no se carga
+  pixelMeta: '',           // ID del píxel de Meta (Facebook/Instagram Ads). Vacío = no se carga
+  // Hotmart cobra en moneda local un poco por encima del cambio de mercado (medido el 20-nov-2026 en
+  // Colombia: USD 15 = $54.422 COP con PSE/efectivo). Este factor acerca el "≈ en tu moneda" a lo que verá al pagar.
+  ajusteLocal: 1.085
 };
 
 /* Ángulos de titular para anuncios: agrega ?a=amigos | chat | timido | citas al enlace.
@@ -899,7 +902,7 @@ var ANGULOS = {
       if(!rate) return;
       $$('.local[data-approx]').forEach(function(el){
         var usd = CFG[el.dataset.approx]; if(!usd) return;
-        var n = (usd*rate).toLocaleString('es-ES',{minimumFractionDigits:info.dec, maximumFractionDigits:info.dec});
+        var n = (usd*rate*(CFG.ajusteLocal||1)).toLocaleString('es-ES',{minimumFractionDigits:info.dec, maximumFractionDigits:info.dec});
         el.textContent = '≈ ' + info.sym + ' ' + n + ' ' + info.cur + ' en tu moneda (aprox.)';
       });
     }).catch(function(){});
